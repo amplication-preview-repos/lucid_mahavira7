@@ -17,7 +17,12 @@ import { ClassModel } from "./ClassModel";
 import { ClassModelCountArgs } from "./ClassModelCountArgs";
 import { ClassModelFindManyArgs } from "./ClassModelFindManyArgs";
 import { ClassModelFindUniqueArgs } from "./ClassModelFindUniqueArgs";
+import { CreateClassModelArgs } from "./CreateClassModelArgs";
+import { UpdateClassModelArgs } from "./UpdateClassModelArgs";
 import { DeleteClassModelArgs } from "./DeleteClassModelArgs";
+import { GradeFindManyArgs } from "../../grade/base/GradeFindManyArgs";
+import { Grade } from "../../grade/base/Grade";
+import { Course } from "../../course/base/Course";
 import { ClassModelService } from "../classModel.service";
 @graphql.Resolver(() => ClassModel)
 export class ClassModelResolverBase {
@@ -51,6 +56,51 @@ export class ClassModelResolverBase {
   }
 
   @graphql.Mutation(() => ClassModel)
+  async createClassModel(
+    @graphql.Args() args: CreateClassModelArgs
+  ): Promise<ClassModel> {
+    return await this.service.createClassModel({
+      ...args,
+      data: {
+        ...args.data,
+
+        course: args.data.course
+          ? {
+              connect: args.data.course,
+            }
+          : undefined,
+      },
+    });
+  }
+
+  @graphql.Mutation(() => ClassModel)
+  async updateClassModel(
+    @graphql.Args() args: UpdateClassModelArgs
+  ): Promise<ClassModel | null> {
+    try {
+      return await this.service.updateClassModel({
+        ...args,
+        data: {
+          ...args.data,
+
+          course: args.data.course
+            ? {
+                connect: args.data.course,
+              }
+            : undefined,
+        },
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new GraphQLError(
+          `No resource was found for ${JSON.stringify(args.where)}`
+        );
+      }
+      throw error;
+    }
+  }
+
+  @graphql.Mutation(() => ClassModel)
   async deleteClassModel(
     @graphql.Args() args: DeleteClassModelArgs
   ): Promise<ClassModel | null> {
@@ -64,5 +114,34 @@ export class ClassModelResolverBase {
       }
       throw error;
     }
+  }
+
+  @graphql.ResolveField(() => [Grade], { name: "grades" })
+  async findGrades(
+    @graphql.Parent() parent: ClassModel,
+    @graphql.Args() args: GradeFindManyArgs
+  ): Promise<Grade[]> {
+    const results = await this.service.findGrades(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @graphql.ResolveField(() => Course, {
+    nullable: true,
+    name: "course",
+  })
+  async getCourse(
+    @graphql.Parent() parent: ClassModel
+  ): Promise<Course | null> {
+    const result = await this.service.getCourse(parent.id);
+
+    if (!result) {
+      return null;
+    }
+    return result;
   }
 }

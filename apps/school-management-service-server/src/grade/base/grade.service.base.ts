@@ -10,7 +10,11 @@ https://docs.amplication.com/how-to/custom-code
 ------------------------------------------------------------------------------
   */
 import { PrismaService } from "../../prisma/prisma.service";
-import { Prisma, Grade as PrismaGrade } from "@prisma/client";
+import {
+  Prisma,
+  Grade as PrismaGrade,
+  ClassModel as PrismaClassModel,
+} from "@prisma/client";
 
 export class GradeServiceBase {
   constructor(protected readonly prisma: PrismaService) {}
@@ -33,5 +37,13 @@ export class GradeServiceBase {
   }
   async deleteGrade(args: Prisma.GradeDeleteArgs): Promise<PrismaGrade> {
     return this.prisma.grade.delete(args);
+  }
+
+  async getClassField(parentId: string): Promise<PrismaClassModel | null> {
+    return this.prisma.grade
+      .findUnique({
+        where: { id: parentId },
+      })
+      .classField();
   }
 }

@@ -22,17 +22,26 @@ import { Course } from "./Course";
 import { CourseFindManyArgs } from "./CourseFindManyArgs";
 import { CourseWhereUniqueInput } from "./CourseWhereUniqueInput";
 import { CourseUpdateInput } from "./CourseUpdateInput";
+import { ClassModelFindManyArgs } from "../../classModel/base/ClassModelFindManyArgs";
+import { ClassModel } from "../../classModel/base/ClassModel";
+import { ClassModelWhereUniqueInput } from "../../classModel/base/ClassModelWhereUniqueInput";
 
 export class CourseControllerBase {
   constructor(protected readonly service: CourseService) {}
   @common.Post()
   @swagger.ApiCreatedResponse({ type: Course })
+  @swagger.ApiBody({
+    type: CourseCreateInput,
+  })
   async createCourse(@common.Body() data: CourseCreateInput): Promise<Course> {
     return await this.service.createCourse({
       data: data,
       select: {
         createdAt: true,
+        creditHours: true,
+        description: true,
         id: true,
+        name: true,
         updatedAt: true,
       },
     });
@@ -47,7 +56,10 @@ export class CourseControllerBase {
       ...args,
       select: {
         createdAt: true,
+        creditHours: true,
+        description: true,
         id: true,
+        name: true,
         updatedAt: true,
       },
     });
@@ -63,7 +75,10 @@ export class CourseControllerBase {
       where: params,
       select: {
         createdAt: true,
+        creditHours: true,
+        description: true,
         id: true,
+        name: true,
         updatedAt: true,
       },
     });
@@ -78,6 +93,9 @@ export class CourseControllerBase {
   @common.Patch("/:id")
   @swagger.ApiOkResponse({ type: Course })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiBody({
+    type: CourseUpdateInput,
+  })
   async updateCourse(
     @common.Param() params: CourseWhereUniqueInput,
     @common.Body() data: CourseUpdateInput
@@ -88,7 +106,10 @@ export class CourseControllerBase {
         data: data,
         select: {
           createdAt: true,
+          creditHours: true,
+          description: true,
           id: true,
+          name: true,
           updatedAt: true,
         },
       });
@@ -113,7 +134,10 @@ export class CourseControllerBase {
         where: params,
         select: {
           createdAt: true,
+          creditHours: true,
+          description: true,
           id: true,
+          name: true,
           updatedAt: true,
         },
       });
@@ -125,5 +149,86 @@ export class CourseControllerBase {
       }
       throw error;
     }
+  }
+
+  @common.Get("/:id/classes")
+  @ApiNestedQuery(ClassModelFindManyArgs)
+  async findClasses(
+    @common.Req() request: Request,
+    @common.Param() params: CourseWhereUniqueInput
+  ): Promise<ClassModel[]> {
+    const query = plainToClass(ClassModelFindManyArgs, request.query);
+    const results = await this.service.findClasses(params.id, {
+      ...query,
+      select: {
+        course: {
+          select: {
+            id: true,
+          },
+        },
+
+        createdAt: true,
+        id: true,
+        name: true,
+        updatedAt: true,
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/classes")
+  async connectClasses(
+    @common.Param() params: CourseWhereUniqueInput,
+    @common.Body() body: ClassModelWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      classes: {
+        connect: body,
+      },
+    };
+    await this.service.updateCourse({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/classes")
+  async updateClasses(
+    @common.Param() params: CourseWhereUniqueInput,
+    @common.Body() body: ClassModelWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      classes: {
+        set: body,
+      },
+    };
+    await this.service.updateCourse({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/classes")
+  async disconnectClasses(
+    @common.Param() params: CourseWhereUniqueInput,
+    @common.Body() body: ClassModelWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      classes: {
+        disconnect: body,
+      },
+    };
+    await this.service.updateCourse({
+      where: params,
+      data,
+      select: { id: true },
+    });
   }
 }

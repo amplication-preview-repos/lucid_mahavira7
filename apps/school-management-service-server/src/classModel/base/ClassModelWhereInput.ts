@@ -11,12 +11,39 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { StringFilter } from "../../util/StringFilter";
+import { CourseWhereUniqueInput } from "../../course/base/CourseWhereUniqueInput";
+import { ValidateNested, IsOptional } from "class-validator";
 import { Type } from "class-transformer";
-import { IsOptional } from "class-validator";
+import { GradeListRelationFilter } from "../../grade/base/GradeListRelationFilter";
+import { StringFilter } from "../../util/StringFilter";
+import { StringNullableFilter } from "../../util/StringNullableFilter";
 
 @InputType()
 class ClassModelWhereInput {
+  @ApiProperty({
+    required: false,
+    type: () => CourseWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => CourseWhereUniqueInput)
+  @IsOptional()
+  @Field(() => CourseWhereUniqueInput, {
+    nullable: true,
+  })
+  course?: CourseWhereUniqueInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => GradeListRelationFilter,
+  })
+  @ValidateNested()
+  @Type(() => GradeListRelationFilter)
+  @IsOptional()
+  @Field(() => GradeListRelationFilter, {
+    nullable: true,
+  })
+  grades?: GradeListRelationFilter;
+
   @ApiProperty({
     required: false,
     type: StringFilter,
@@ -27,6 +54,17 @@ class ClassModelWhereInput {
     nullable: true,
   })
   id?: StringFilter;
+
+  @ApiProperty({
+    required: false,
+    type: StringNullableFilter,
+  })
+  @Type(() => StringNullableFilter)
+  @IsOptional()
+  @Field(() => StringNullableFilter, {
+    nullable: true,
+  })
+  name?: StringNullableFilter;
 }
 
 export { ClassModelWhereInput as ClassModelWhereInput };

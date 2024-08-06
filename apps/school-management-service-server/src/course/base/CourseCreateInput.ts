@@ -9,5 +9,70 @@ https://docs.amplication.com/how-to/custom-code
 
 ------------------------------------------------------------------------------
   */
-class CourseCreateInput {}
+import { InputType, Field } from "@nestjs/graphql";
+import { ApiProperty } from "@nestjs/swagger";
+import { ClassModelCreateNestedManyWithoutCoursesInput } from "./ClassModelCreateNestedManyWithoutCoursesInput";
+import {
+  ValidateNested,
+  IsOptional,
+  IsInt,
+  Min,
+  Max,
+  IsString,
+  MaxLength,
+} from "class-validator";
+import { Type } from "class-transformer";
+
+@InputType()
+class CourseCreateInput {
+  @ApiProperty({
+    required: false,
+    type: () => ClassModelCreateNestedManyWithoutCoursesInput,
+  })
+  @ValidateNested()
+  @Type(() => ClassModelCreateNestedManyWithoutCoursesInput)
+  @IsOptional()
+  @Field(() => ClassModelCreateNestedManyWithoutCoursesInput, {
+    nullable: true,
+  })
+  classes?: ClassModelCreateNestedManyWithoutCoursesInput;
+
+  @ApiProperty({
+    required: false,
+    type: Number,
+  })
+  @IsInt()
+  @Min(-999999999)
+  @Max(999999999)
+  @IsOptional()
+  @Field(() => Number, {
+    nullable: true,
+  })
+  creditHours?: number | null;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @MaxLength(1000)
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  description?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @MaxLength(1000)
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  name?: string | null;
+}
+
 export { CourseCreateInput as CourseCreateInput };

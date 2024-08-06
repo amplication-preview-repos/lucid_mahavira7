@@ -17,6 +17,8 @@ import { Payment } from "./Payment";
 import { PaymentCountArgs } from "./PaymentCountArgs";
 import { PaymentFindManyArgs } from "./PaymentFindManyArgs";
 import { PaymentFindUniqueArgs } from "./PaymentFindUniqueArgs";
+import { CreatePaymentArgs } from "./CreatePaymentArgs";
+import { UpdatePaymentArgs } from "./UpdatePaymentArgs";
 import { DeletePaymentArgs } from "./DeletePaymentArgs";
 import { PaymentService } from "../payment.service";
 @graphql.Resolver(() => Payment)
@@ -48,6 +50,35 @@ export class PaymentResolverBase {
       return null;
     }
     return result;
+  }
+
+  @graphql.Mutation(() => Payment)
+  async createPayment(
+    @graphql.Args() args: CreatePaymentArgs
+  ): Promise<Payment> {
+    return await this.service.createPayment({
+      ...args,
+      data: args.data,
+    });
+  }
+
+  @graphql.Mutation(() => Payment)
+  async updatePayment(
+    @graphql.Args() args: UpdatePaymentArgs
+  ): Promise<Payment | null> {
+    try {
+      return await this.service.updatePayment({
+        ...args,
+        data: args.data,
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new GraphQLError(
+          `No resource was found for ${JSON.stringify(args.where)}`
+        );
+      }
+      throw error;
+    }
   }
 
   @graphql.Mutation(() => Payment)

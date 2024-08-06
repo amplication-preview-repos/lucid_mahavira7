@@ -17,6 +17,8 @@ import { Attendance } from "./Attendance";
 import { AttendanceCountArgs } from "./AttendanceCountArgs";
 import { AttendanceFindManyArgs } from "./AttendanceFindManyArgs";
 import { AttendanceFindUniqueArgs } from "./AttendanceFindUniqueArgs";
+import { CreateAttendanceArgs } from "./CreateAttendanceArgs";
+import { UpdateAttendanceArgs } from "./UpdateAttendanceArgs";
 import { DeleteAttendanceArgs } from "./DeleteAttendanceArgs";
 import { AttendanceService } from "../attendance.service";
 @graphql.Resolver(() => Attendance)
@@ -48,6 +50,35 @@ export class AttendanceResolverBase {
       return null;
     }
     return result;
+  }
+
+  @graphql.Mutation(() => Attendance)
+  async createAttendance(
+    @graphql.Args() args: CreateAttendanceArgs
+  ): Promise<Attendance> {
+    return await this.service.createAttendance({
+      ...args,
+      data: args.data,
+    });
+  }
+
+  @graphql.Mutation(() => Attendance)
+  async updateAttendance(
+    @graphql.Args() args: UpdateAttendanceArgs
+  ): Promise<Attendance | null> {
+    try {
+      return await this.service.updateAttendance({
+        ...args,
+        data: args.data,
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new GraphQLError(
+          `No resource was found for ${JSON.stringify(args.where)}`
+        );
+      }
+      throw error;
+    }
   }
 
   @graphql.Mutation(() => Attendance)

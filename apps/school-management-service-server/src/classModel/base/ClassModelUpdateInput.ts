@@ -9,5 +9,55 @@ https://docs.amplication.com/how-to/custom-code
 
 ------------------------------------------------------------------------------
   */
-class ClassModelUpdateInput {}
+import { InputType, Field } from "@nestjs/graphql";
+import { ApiProperty } from "@nestjs/swagger";
+import { CourseWhereUniqueInput } from "../../course/base/CourseWhereUniqueInput";
+import {
+  ValidateNested,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from "class-validator";
+import { Type } from "class-transformer";
+import { GradeUpdateManyWithoutClassModelsInput } from "./GradeUpdateManyWithoutClassModelsInput";
+
+@InputType()
+class ClassModelUpdateInput {
+  @ApiProperty({
+    required: false,
+    type: () => CourseWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => CourseWhereUniqueInput)
+  @IsOptional()
+  @Field(() => CourseWhereUniqueInput, {
+    nullable: true,
+  })
+  course?: CourseWhereUniqueInput | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => GradeUpdateManyWithoutClassModelsInput,
+  })
+  @ValidateNested()
+  @Type(() => GradeUpdateManyWithoutClassModelsInput)
+  @IsOptional()
+  @Field(() => GradeUpdateManyWithoutClassModelsInput, {
+    nullable: true,
+  })
+  grades?: GradeUpdateManyWithoutClassModelsInput;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @MaxLength(1000)
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  name?: string | null;
+}
+
 export { ClassModelUpdateInput as ClassModelUpdateInput };

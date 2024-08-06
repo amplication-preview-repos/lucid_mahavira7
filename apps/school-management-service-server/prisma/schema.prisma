@@ -7,52 +7,81 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model ClassModel {
-  createdAt DateTime @default(now())
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  updatedAt DateTime @updatedAt
+model Grade {
+  classField   ClassModel? @relation(fields: [classFieldId], references: [id])
+  classFieldId String?     @db.ObjectId
+  createdAt    DateTime    @default(now())
+  grade        Int?
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  student      String?
+  updatedAt    DateTime    @updatedAt
 }
 
 model Course {
-  createdAt DateTime @default(now())
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  updatedAt DateTime @updatedAt
+  classes     ClassModel[]
+  createdAt   DateTime     @default(now())
+  creditHours Int?
+  description String?
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  name        String?
+  updatedAt   DateTime     @updatedAt
 }
 
-model Grade {
+model ClassModel {
+  course    Course?  @relation(fields: [courseId], references: [id])
+  courseId  String?  @db.ObjectId
   createdAt DateTime @default(now())
+  grades    Grade[]
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String?
   updatedAt DateTime @updatedAt
 }
 
 model Notification {
+  content   String?
   createdAt DateTime @default(now())
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  updatedAt DateTime @updatedAt
-}
-
-model Message {
-  createdAt DateTime @default(now())
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  updatedAt DateTime @updatedAt
-}
-
-model Attendance {
-  createdAt DateTime @default(now())
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  updatedAt DateTime @updatedAt
-}
-
-model Timetable {
-  createdAt DateTime @default(now())
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  isRead    Boolean?
+  recipient String?
+  title     String?
   updatedAt DateTime @updatedAt
 }
 
 model Payment {
+  amount    Float?
+  createdAt DateTime           @default(now())
+  id        String             @id @default(auto()) @map("_id") @db.ObjectId
+  status    EnumPaymentStatus?
+  student   String?
+  updatedAt DateTime           @updatedAt
+}
+
+model Message {
+  content   String?
   createdAt DateTime @default(now())
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  recipient String?
+  sender    String?
   updatedAt DateTime @updatedAt
+}
+
+model Attendance {
+  createdAt DateTime  @default(now())
+  date      DateTime?
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  status    Boolean?
+  student   String?
+  updatedAt DateTime  @updatedAt
+}
+
+model Timetable {
+  classField String?
+  createdAt  DateTime  @default(now())
+  day        String?
+  endTime    DateTime?
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  startTime  DateTime?
+  updatedAt  DateTime  @updatedAt
 }
 
 model User {
@@ -65,4 +94,8 @@ model User {
   roles     Json
   updatedAt DateTime @updatedAt
   username  String   @unique
+}
+
+enum EnumPaymentStatus {
+  Option1
 }

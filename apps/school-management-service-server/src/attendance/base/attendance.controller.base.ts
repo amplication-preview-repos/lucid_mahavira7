@@ -27,6 +27,9 @@ export class AttendanceControllerBase {
   constructor(protected readonly service: AttendanceService) {}
   @common.Post()
   @swagger.ApiCreatedResponse({ type: Attendance })
+  @swagger.ApiBody({
+    type: AttendanceCreateInput,
+  })
   async createAttendance(
     @common.Body() data: AttendanceCreateInput
   ): Promise<Attendance> {
@@ -34,7 +37,10 @@ export class AttendanceControllerBase {
       data: data,
       select: {
         createdAt: true,
+        date: true,
         id: true,
+        status: true,
+        student: true,
         updatedAt: true,
       },
     });
@@ -49,7 +55,10 @@ export class AttendanceControllerBase {
       ...args,
       select: {
         createdAt: true,
+        date: true,
         id: true,
+        status: true,
+        student: true,
         updatedAt: true,
       },
     });
@@ -65,7 +74,10 @@ export class AttendanceControllerBase {
       where: params,
       select: {
         createdAt: true,
+        date: true,
         id: true,
+        status: true,
+        student: true,
         updatedAt: true,
       },
     });
@@ -80,6 +92,9 @@ export class AttendanceControllerBase {
   @common.Patch("/:id")
   @swagger.ApiOkResponse({ type: Attendance })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiBody({
+    type: AttendanceUpdateInput,
+  })
   async updateAttendance(
     @common.Param() params: AttendanceWhereUniqueInput,
     @common.Body() data: AttendanceUpdateInput
@@ -90,7 +105,10 @@ export class AttendanceControllerBase {
         data: data,
         select: {
           createdAt: true,
+          date: true,
           id: true,
+          status: true,
+          student: true,
           updatedAt: true,
         },
       });
@@ -115,7 +133,10 @@ export class AttendanceControllerBase {
         where: params,
         select: {
           createdAt: true,
+          date: true,
           id: true,
+          status: true,
+          student: true,
           updatedAt: true,
         },
       });

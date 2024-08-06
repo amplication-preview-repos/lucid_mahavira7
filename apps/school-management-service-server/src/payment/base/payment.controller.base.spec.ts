@@ -18,25 +18,33 @@ import { PaymentService } from "../payment.service";
 const nonExistingId = "nonExistingId";
 const existingId = "existingId";
 const CREATE_INPUT = {
+  amount: 42.42,
   createdAt: new Date(),
   id: "exampleId",
+  student: "exampleStudent",
   updatedAt: new Date(),
 };
 const CREATE_RESULT = {
+  amount: 42.42,
   createdAt: new Date(),
   id: "exampleId",
+  student: "exampleStudent",
   updatedAt: new Date(),
 };
 const FIND_MANY_RESULT = [
   {
+    amount: 42.42,
     createdAt: new Date(),
     id: "exampleId",
+    student: "exampleStudent",
     updatedAt: new Date(),
   },
 ];
 const FIND_ONE_RESULT = {
+  amount: 42.42,
   createdAt: new Date(),
   id: "exampleId",
+  student: "exampleStudent",
   updatedAt: new Date(),
 };
 

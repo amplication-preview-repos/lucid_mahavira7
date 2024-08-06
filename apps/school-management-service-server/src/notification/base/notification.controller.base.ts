@@ -27,14 +27,21 @@ export class NotificationControllerBase {
   constructor(protected readonly service: NotificationService) {}
   @common.Post()
   @swagger.ApiCreatedResponse({ type: Notification })
+  @swagger.ApiBody({
+    type: NotificationCreateInput,
+  })
   async createNotification(
     @common.Body() data: NotificationCreateInput
   ): Promise<Notification> {
     return await this.service.createNotification({
       data: data,
       select: {
+        content: true,
         createdAt: true,
         id: true,
+        isRead: true,
+        recipient: true,
+        title: true,
         updatedAt: true,
       },
     });
@@ -48,8 +55,12 @@ export class NotificationControllerBase {
     return this.service.notifications({
       ...args,
       select: {
+        content: true,
         createdAt: true,
         id: true,
+        isRead: true,
+        recipient: true,
+        title: true,
         updatedAt: true,
       },
     });
@@ -64,8 +75,12 @@ export class NotificationControllerBase {
     const result = await this.service.notification({
       where: params,
       select: {
+        content: true,
         createdAt: true,
         id: true,
+        isRead: true,
+        recipient: true,
+        title: true,
         updatedAt: true,
       },
     });
@@ -80,6 +95,9 @@ export class NotificationControllerBase {
   @common.Patch("/:id")
   @swagger.ApiOkResponse({ type: Notification })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiBody({
+    type: NotificationUpdateInput,
+  })
   async updateNotification(
     @common.Param() params: NotificationWhereUniqueInput,
     @common.Body() data: NotificationUpdateInput
@@ -89,8 +107,12 @@ export class NotificationControllerBase {
         where: params,
         data: data,
         select: {
+          content: true,
           createdAt: true,
           id: true,
+          isRead: true,
+          recipient: true,
+          title: true,
           updatedAt: true,
         },
       });
@@ -114,8 +136,12 @@ export class NotificationControllerBase {
       return await this.service.deleteNotification({
         where: params,
         select: {
+          content: true,
           createdAt: true,
           id: true,
+          isRead: true,
+          recipient: true,
+          title: true,
           updatedAt: true,
         },
       });

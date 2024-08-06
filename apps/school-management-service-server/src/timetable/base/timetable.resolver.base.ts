@@ -17,6 +17,8 @@ import { Timetable } from "./Timetable";
 import { TimetableCountArgs } from "./TimetableCountArgs";
 import { TimetableFindManyArgs } from "./TimetableFindManyArgs";
 import { TimetableFindUniqueArgs } from "./TimetableFindUniqueArgs";
+import { CreateTimetableArgs } from "./CreateTimetableArgs";
+import { UpdateTimetableArgs } from "./UpdateTimetableArgs";
 import { DeleteTimetableArgs } from "./DeleteTimetableArgs";
 import { TimetableService } from "../timetable.service";
 @graphql.Resolver(() => Timetable)
@@ -48,6 +50,35 @@ export class TimetableResolverBase {
       return null;
     }
     return result;
+  }
+
+  @graphql.Mutation(() => Timetable)
+  async createTimetable(
+    @graphql.Args() args: CreateTimetableArgs
+  ): Promise<Timetable> {
+    return await this.service.createTimetable({
+      ...args,
+      data: args.data,
+    });
+  }
+
+  @graphql.Mutation(() => Timetable)
+  async updateTimetable(
+    @graphql.Args() args: UpdateTimetableArgs
+  ): Promise<Timetable | null> {
+    try {
+      return await this.service.updateTimetable({
+        ...args,
+        data: args.data,
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new GraphQLError(
+          `No resource was found for ${JSON.stringify(args.where)}`
+        );
+      }
+      throw error;
+    }
   }
 
   @graphql.Mutation(() => Timetable)

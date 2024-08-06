@@ -9,5 +9,55 @@ https://docs.amplication.com/how-to/custom-code
 
 ------------------------------------------------------------------------------
   */
-class ClassModelCreateInput {}
+import { InputType, Field } from "@nestjs/graphql";
+import { ApiProperty } from "@nestjs/swagger";
+import { CourseWhereUniqueInput } from "../../course/base/CourseWhereUniqueInput";
+import {
+  ValidateNested,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from "class-validator";
+import { Type } from "class-transformer";
+import { GradeCreateNestedManyWithoutClassModelsInput } from "./GradeCreateNestedManyWithoutClassModelsInput";
+
+@InputType()
+class ClassModelCreateInput {
+  @ApiProperty({
+    required: false,
+    type: () => CourseWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => CourseWhereUniqueInput)
+  @IsOptional()
+  @Field(() => CourseWhereUniqueInput, {
+    nullable: true,
+  })
+  course?: CourseWhereUniqueInput | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => GradeCreateNestedManyWithoutClassModelsInput,
+  })
+  @ValidateNested()
+  @Type(() => GradeCreateNestedManyWithoutClassModelsInput)
+  @IsOptional()
+  @Field(() => GradeCreateNestedManyWithoutClassModelsInput, {
+    nullable: true,
+  })
+  grades?: GradeCreateNestedManyWithoutClassModelsInput;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @MaxLength(1000)
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  name?: string | null;
+}
+
 export { ClassModelCreateInput as ClassModelCreateInput };

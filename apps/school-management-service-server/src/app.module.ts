@@ -1,12 +1,12 @@
 import { Module } from "@nestjs/common";
-import { ClassModelModule } from "./classModel/classModel.module";
-import { CourseModule } from "./course/course.module";
 import { GradeModule } from "./grade/grade.module";
+import { CourseModule } from "./course/course.module";
+import { ClassModelModule } from "./classModel/classModel.module";
 import { NotificationModule } from "./notification/notification.module";
+import { PaymentModule } from "./payment/payment.module";
 import { MessageModule } from "./message/message.module";
 import { AttendanceModule } from "./attendance/attendance.module";
 import { TimetableModule } from "./timetable/timetable.module";
-import { PaymentModule } from "./payment/payment.module";
 import { UserModule } from "./user/user.module";
 import { HealthModule } from "./health/health.module";
 import { PrismaModule } from "./prisma/prisma.module";
@@ -20,14 +20,14 @@ import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 @Module({
   controllers: [],
   imports: [
-    ClassModelModule,
-    CourseModule,
     GradeModule,
+    CourseModule,
+    ClassModelModule,
     NotificationModule,
+    PaymentModule,
     MessageModule,
     AttendanceModule,
     TimetableModule,
-    PaymentModule,
     UserModule,
     HealthModule,
     PrismaModule,

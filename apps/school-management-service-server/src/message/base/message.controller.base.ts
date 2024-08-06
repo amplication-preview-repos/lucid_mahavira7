@@ -27,14 +27,20 @@ export class MessageControllerBase {
   constructor(protected readonly service: MessageService) {}
   @common.Post()
   @swagger.ApiCreatedResponse({ type: Message })
+  @swagger.ApiBody({
+    type: MessageCreateInput,
+  })
   async createMessage(
     @common.Body() data: MessageCreateInput
   ): Promise<Message> {
     return await this.service.createMessage({
       data: data,
       select: {
+        content: true,
         createdAt: true,
         id: true,
+        recipient: true,
+        sender: true,
         updatedAt: true,
       },
     });
@@ -48,8 +54,11 @@ export class MessageControllerBase {
     return this.service.messages({
       ...args,
       select: {
+        content: true,
         createdAt: true,
         id: true,
+        recipient: true,
+        sender: true,
         updatedAt: true,
       },
     });
@@ -64,8 +73,11 @@ export class MessageControllerBase {
     const result = await this.service.message({
       where: params,
       select: {
+        content: true,
         createdAt: true,
         id: true,
+        recipient: true,
+        sender: true,
         updatedAt: true,
       },
     });
@@ -80,6 +92,9 @@ export class MessageControllerBase {
   @common.Patch("/:id")
   @swagger.ApiOkResponse({ type: Message })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiBody({
+    type: MessageUpdateInput,
+  })
   async updateMessage(
     @common.Param() params: MessageWhereUniqueInput,
     @common.Body() data: MessageUpdateInput
@@ -89,8 +104,11 @@ export class MessageControllerBase {
         where: params,
         data: data,
         select: {
+          content: true,
           createdAt: true,
           id: true,
+          recipient: true,
+          sender: true,
           updatedAt: true,
         },
       });
@@ -114,8 +132,11 @@ export class MessageControllerBase {
       return await this.service.deleteMessage({
         where: params,
         select: {
+          content: true,
           createdAt: true,
           id: true,
+          recipient: true,
+          sender: true,
           updatedAt: true,
         },
       });

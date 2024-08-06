@@ -27,14 +27,20 @@ export class PaymentControllerBase {
   constructor(protected readonly service: PaymentService) {}
   @common.Post()
   @swagger.ApiCreatedResponse({ type: Payment })
+  @swagger.ApiBody({
+    type: PaymentCreateInput,
+  })
   async createPayment(
     @common.Body() data: PaymentCreateInput
   ): Promise<Payment> {
     return await this.service.createPayment({
       data: data,
       select: {
+        amount: true,
         createdAt: true,
         id: true,
+        status: true,
+        student: true,
         updatedAt: true,
       },
     });
@@ -48,8 +54,11 @@ export class PaymentControllerBase {
     return this.service.payments({
       ...args,
       select: {
+        amount: true,
         createdAt: true,
         id: true,
+        status: true,
+        student: true,
         updatedAt: true,
       },
     });
@@ -64,8 +73,11 @@ export class PaymentControllerBase {
     const result = await this.service.payment({
       where: params,
       select: {
+        amount: true,
         createdAt: true,
         id: true,
+        status: true,
+        student: true,
         updatedAt: true,
       },
     });
@@ -80,6 +92,9 @@ export class PaymentControllerBase {
   @common.Patch("/:id")
   @swagger.ApiOkResponse({ type: Payment })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiBody({
+    type: PaymentUpdateInput,
+  })
   async updatePayment(
     @common.Param() params: PaymentWhereUniqueInput,
     @common.Body() data: PaymentUpdateInput
@@ -89,8 +104,11 @@ export class PaymentControllerBase {
         where: params,
         data: data,
         select: {
+          amount: true,
           createdAt: true,
           id: true,
+          status: true,
+          student: true,
           updatedAt: true,
         },
       });
@@ -114,8 +132,11 @@ export class PaymentControllerBase {
       return await this.service.deletePayment({
         where: params,
         select: {
+          amount: true,
           createdAt: true,
           id: true,
+          status: true,
+          student: true,
           updatedAt: true,
         },
       });

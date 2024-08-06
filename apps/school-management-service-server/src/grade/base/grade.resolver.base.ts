@@ -17,7 +17,10 @@ import { Grade } from "./Grade";
 import { GradeCountArgs } from "./GradeCountArgs";
 import { GradeFindManyArgs } from "./GradeFindManyArgs";
 import { GradeFindUniqueArgs } from "./GradeFindUniqueArgs";
+import { CreateGradeArgs } from "./CreateGradeArgs";
+import { UpdateGradeArgs } from "./UpdateGradeArgs";
 import { DeleteGradeArgs } from "./DeleteGradeArgs";
+import { ClassModel } from "../../classModel/base/ClassModel";
 import { GradeService } from "../grade.service";
 @graphql.Resolver(() => Grade)
 export class GradeResolverBase {
@@ -49,6 +52,49 @@ export class GradeResolverBase {
   }
 
   @graphql.Mutation(() => Grade)
+  async createGrade(@graphql.Args() args: CreateGradeArgs): Promise<Grade> {
+    return await this.service.createGrade({
+      ...args,
+      data: {
+        ...args.data,
+
+        classField: args.data.classField
+          ? {
+              connect: args.data.classField,
+            }
+          : undefined,
+      },
+    });
+  }
+
+  @graphql.Mutation(() => Grade)
+  async updateGrade(
+    @graphql.Args() args: UpdateGradeArgs
+  ): Promise<Grade | null> {
+    try {
+      return await this.service.updateGrade({
+        ...args,
+        data: {
+          ...args.data,
+
+          classField: args.data.classField
+            ? {
+                connect: args.data.classField,
+              }
+            : undefined,
+        },
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new GraphQLError(
+          `No resource was found for ${JSON.stringify(args.where)}`
+        );
+      }
+      throw error;
+    }
+  }
+
+  @graphql.Mutation(() => Grade)
   async deleteGrade(
     @graphql.Args() args: DeleteGradeArgs
   ): Promise<Grade | null> {
@@ -62,5 +108,20 @@ export class GradeResolverBase {
       }
       throw error;
     }
+  }
+
+  @graphql.ResolveField(() => ClassModel, {
+    nullable: true,
+    name: "classField",
+  })
+  async getClassField(
+    @graphql.Parent() parent: Grade
+  ): Promise<ClassModel | null> {
+    const result = await this.service.getClassField(parent.id);
+
+    if (!result) {
+      return null;
+    }
+    return result;
   }
 }

@@ -17,7 +17,11 @@ import { Course } from "./Course";
 import { CourseCountArgs } from "./CourseCountArgs";
 import { CourseFindManyArgs } from "./CourseFindManyArgs";
 import { CourseFindUniqueArgs } from "./CourseFindUniqueArgs";
+import { CreateCourseArgs } from "./CreateCourseArgs";
+import { UpdateCourseArgs } from "./UpdateCourseArgs";
 import { DeleteCourseArgs } from "./DeleteCourseArgs";
+import { ClassModelFindManyArgs } from "../../classModel/base/ClassModelFindManyArgs";
+import { ClassModel } from "../../classModel/base/ClassModel";
 import { CourseService } from "../course.service";
 @graphql.Resolver(() => Course)
 export class CourseResolverBase {
@@ -49,6 +53,33 @@ export class CourseResolverBase {
   }
 
   @graphql.Mutation(() => Course)
+  async createCourse(@graphql.Args() args: CreateCourseArgs): Promise<Course> {
+    return await this.service.createCourse({
+      ...args,
+      data: args.data,
+    });
+  }
+
+  @graphql.Mutation(() => Course)
+  async updateCourse(
+    @graphql.Args() args: UpdateCourseArgs
+  ): Promise<Course | null> {
+    try {
+      return await this.service.updateCourse({
+        ...args,
+        data: args.data,
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new GraphQLError(
+          `No resource was found for ${JSON.stringify(args.where)}`
+        );
+      }
+      throw error;
+    }
+  }
+
+  @graphql.Mutation(() => Course)
   async deleteCourse(
     @graphql.Args() args: DeleteCourseArgs
   ): Promise<Course | null> {
@@ -62,5 +93,19 @@ export class CourseResolverBase {
       }
       throw error;
     }
+  }
+
+  @graphql.ResolveField(() => [ClassModel], { name: "classes" })
+  async findClasses(
+    @graphql.Parent() parent: Course,
+    @graphql.Args() args: ClassModelFindManyArgs
+  ): Promise<ClassModel[]> {
+    const results = await this.service.findClasses(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
   }
 }

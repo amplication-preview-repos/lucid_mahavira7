@@ -11,11 +11,34 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { ObjectType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsString } from "class-validator";
+import {
+  IsNumber,
+  Min,
+  Max,
+  IsOptional,
+  IsDate,
+  IsString,
+  IsEnum,
+  MaxLength,
+} from "class-validator";
 import { Type } from "class-transformer";
+import { EnumPaymentStatus } from "./EnumPaymentStatus";
 
 @ObjectType()
 class Payment {
+  @ApiProperty({
+    required: false,
+    type: Number,
+  })
+  @IsNumber()
+  @Min(-999999999)
+  @Max(999999999)
+  @IsOptional()
+  @Field(() => Number, {
+    nullable: true,
+  })
+  amount!: number | null;
+
   @ApiProperty({
     required: true,
   })
@@ -31,6 +54,29 @@ class Payment {
   @IsString()
   @Field(() => String)
   id!: string;
+
+  @ApiProperty({
+    required: false,
+    enum: EnumPaymentStatus,
+  })
+  @IsEnum(EnumPaymentStatus)
+  @IsOptional()
+  @Field(() => EnumPaymentStatus, {
+    nullable: true,
+  })
+  status?: "Option1" | null;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @MaxLength(1000)
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  student!: string | null;
 
   @ApiProperty({
     required: true,

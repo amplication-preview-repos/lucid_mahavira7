@@ -1,5 +1,12 @@
 import * as React from "react";
-import { List, Datagrid, ListProps, DateField, TextField } from "react-admin";
+import {
+  List,
+  Datagrid,
+  ListProps,
+  TextField,
+  DateField,
+  BooleanField,
+} from "react-admin";
 import Pagination from "../Components/Pagination";
 
 export const NotificationList = (props: ListProps): React.ReactElement => {
@@ -12,8 +19,12 @@ export const NotificationList = (props: ListProps): React.ReactElement => {
       pagination={<Pagination />}
     >
       <Datagrid rowClick="show">
+        <TextField label="content" source="content" />
         <DateField source="createdAt" label="Created At" />
         <TextField label="ID" source="id" />
+        <BooleanField label="isRead" source="isRead" />
+        <TextField label="recipient" source="recipient" />
+        <TextField label="title" source="title" />
         <DateField source="updatedAt" label="Updated At" />
       </Datagrid>
     </List>

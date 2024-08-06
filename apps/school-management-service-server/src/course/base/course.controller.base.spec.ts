@@ -19,24 +19,36 @@ const nonExistingId = "nonExistingId";
 const existingId = "existingId";
 const CREATE_INPUT = {
   createdAt: new Date(),
+  creditHours: 42,
+  description: "exampleDescription",
   id: "exampleId",
+  name: "exampleName",
   updatedAt: new Date(),
 };
 const CREATE_RESULT = {
   createdAt: new Date(),
+  creditHours: 42,
+  description: "exampleDescription",
   id: "exampleId",
+  name: "exampleName",
   updatedAt: new Date(),
 };
 const FIND_MANY_RESULT = [
   {
     createdAt: new Date(),
+    creditHours: 42,
+    description: "exampleDescription",
     id: "exampleId",
+    name: "exampleName",
     updatedAt: new Date(),
   },
 ];
 const FIND_ONE_RESULT = {
   createdAt: new Date(),
+  creditHours: 42,
+  description: "exampleDescription",
   id: "exampleId",
+  name: "exampleName",
   updatedAt: new Date(),
 };
 

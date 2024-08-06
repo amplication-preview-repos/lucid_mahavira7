@@ -27,12 +27,31 @@ export class GradeControllerBase {
   constructor(protected readonly service: GradeService) {}
   @common.Post()
   @swagger.ApiCreatedResponse({ type: Grade })
+  @swagger.ApiBody({
+    type: GradeCreateInput,
+  })
   async createGrade(@common.Body() data: GradeCreateInput): Promise<Grade> {
     return await this.service.createGrade({
-      data: data,
+      data: {
+        ...data,
+
+        classField: data.classField
+          ? {
+              connect: data.classField,
+            }
+          : undefined,
+      },
       select: {
+        classField: {
+          select: {
+            id: true,
+          },
+        },
+
         createdAt: true,
+        grade: true,
         id: true,
+        student: true,
         updatedAt: true,
       },
     });
@@ -46,8 +65,16 @@ export class GradeControllerBase {
     return this.service.grades({
       ...args,
       select: {
+        classField: {
+          select: {
+            id: true,
+          },
+        },
+
         createdAt: true,
+        grade: true,
         id: true,
+        student: true,
         updatedAt: true,
       },
     });
@@ -62,8 +89,16 @@ export class GradeControllerBase {
     const result = await this.service.grade({
       where: params,
       select: {
+        classField: {
+          select: {
+            id: true,
+          },
+        },
+
         createdAt: true,
+        grade: true,
         id: true,
+        student: true,
         updatedAt: true,
       },
     });
@@ -78,6 +113,9 @@ export class GradeControllerBase {
   @common.Patch("/:id")
   @swagger.ApiOkResponse({ type: Grade })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiBody({
+    type: GradeUpdateInput,
+  })
   async updateGrade(
     @common.Param() params: GradeWhereUniqueInput,
     @common.Body() data: GradeUpdateInput
@@ -85,10 +123,26 @@ export class GradeControllerBase {
     try {
       return await this.service.updateGrade({
         where: params,
-        data: data,
+        data: {
+          ...data,
+
+          classField: data.classField
+            ? {
+                connect: data.classField,
+              }
+            : undefined,
+        },
         select: {
+          classField: {
+            select: {
+              id: true,
+            },
+          },
+
           createdAt: true,
+          grade: true,
           id: true,
+          student: true,
           updatedAt: true,
         },
       });
@@ -112,8 +166,16 @@ export class GradeControllerBase {
       return await this.service.deleteGrade({
         where: params,
         select: {
+          classField: {
+            select: {
+              id: true,
+            },
+          },
+
           createdAt: true,
+          grade: true,
           id: true,
+          student: true,
           updatedAt: true,
         },
       });

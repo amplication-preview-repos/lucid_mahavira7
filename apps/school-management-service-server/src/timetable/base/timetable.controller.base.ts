@@ -27,14 +27,21 @@ export class TimetableControllerBase {
   constructor(protected readonly service: TimetableService) {}
   @common.Post()
   @swagger.ApiCreatedResponse({ type: Timetable })
+  @swagger.ApiBody({
+    type: TimetableCreateInput,
+  })
   async createTimetable(
     @common.Body() data: TimetableCreateInput
   ): Promise<Timetable> {
     return await this.service.createTimetable({
       data: data,
       select: {
+        classField: true,
         createdAt: true,
+        day: true,
+        endTime: true,
         id: true,
+        startTime: true,
         updatedAt: true,
       },
     });
@@ -48,8 +55,12 @@ export class TimetableControllerBase {
     return this.service.timetables({
       ...args,
       select: {
+        classField: true,
         createdAt: true,
+        day: true,
+        endTime: true,
         id: true,
+        startTime: true,
         updatedAt: true,
       },
     });
@@ -64,8 +75,12 @@ export class TimetableControllerBase {
     const result = await this.service.timetable({
       where: params,
       select: {
+        classField: true,
         createdAt: true,
+        day: true,
+        endTime: true,
         id: true,
+        startTime: true,
         updatedAt: true,
       },
     });
@@ -80,6 +95,9 @@ export class TimetableControllerBase {
   @common.Patch("/:id")
   @swagger.ApiOkResponse({ type: Timetable })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiBody({
+    type: TimetableUpdateInput,
+  })
   async updateTimetable(
     @common.Param() params: TimetableWhereUniqueInput,
     @common.Body() data: TimetableUpdateInput
@@ -89,8 +107,12 @@ export class TimetableControllerBase {
         where: params,
         data: data,
         select: {
+          classField: true,
           createdAt: true,
+          day: true,
+          endTime: true,
           id: true,
+          startTime: true,
           updatedAt: true,
         },
       });
@@ -114,8 +136,12 @@ export class TimetableControllerBase {
       return await this.service.deleteTimetable({
         where: params,
         select: {
+          classField: true,
           createdAt: true,
+          day: true,
+          endTime: true,
           id: true,
+          startTime: true,
           updatedAt: true,
         },
       });

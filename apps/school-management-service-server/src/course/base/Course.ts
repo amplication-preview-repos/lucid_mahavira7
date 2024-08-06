@@ -11,11 +11,30 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { ObjectType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsString } from "class-validator";
+import { ClassModel } from "../../classModel/base/ClassModel";
+import {
+  ValidateNested,
+  IsOptional,
+  IsDate,
+  IsInt,
+  Min,
+  Max,
+  IsString,
+  MaxLength,
+} from "class-validator";
 import { Type } from "class-transformer";
 
 @ObjectType()
 class Course {
+  @ApiProperty({
+    required: false,
+    type: () => [ClassModel],
+  })
+  @ValidateNested()
+  @Type(() => ClassModel)
+  @IsOptional()
+  classes?: Array<ClassModel>;
+
   @ApiProperty({
     required: true,
   })
@@ -25,12 +44,49 @@ class Course {
   createdAt!: Date;
 
   @ApiProperty({
+    required: false,
+    type: Number,
+  })
+  @IsInt()
+  @Min(-999999999)
+  @Max(999999999)
+  @IsOptional()
+  @Field(() => Number, {
+    nullable: true,
+  })
+  creditHours!: number | null;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @MaxLength(1000)
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  description!: string | null;
+
+  @ApiProperty({
     required: true,
     type: String,
   })
   @IsString()
   @Field(() => String)
   id!: string;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @MaxLength(1000)
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  name!: string | null;
 
   @ApiProperty({
     required: true,
